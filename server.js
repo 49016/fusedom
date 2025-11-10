@@ -118,7 +118,7 @@ const fuseOps = {
     console.log('readdir(%s)', path);
     
     if (!wsClient) {
-      return cb(-Fuse.ENOTCONN || -107);
+      return cb(Fuse.ENOENT);
     }
 
     try {
@@ -126,7 +126,7 @@ const fuseOps = {
       cb(0, entries);
     } catch (err) {
       console.error('readdir error:', err);
-      cb(-Fuse.EIO || -5);
+      cb(Fuse.EIO);
     }
   },
 
@@ -134,7 +134,7 @@ const fuseOps = {
     console.log('getattr(%s)', path);
     
     if (!wsClient) {
-      return cb(-Fuse.ENOTCONN || -107);
+      return cb(Fuse.ENOENT);
     }
 
     try {
@@ -152,7 +152,7 @@ const fuseOps = {
 
       const node = findNode(path);
       if (!node) {
-        return cb(-Fuse.ENOENT || -2);
+        return cb(Fuse.ENOENT);
       }
 
       // Check if it's a directory (has children) or file
@@ -171,7 +171,7 @@ const fuseOps = {
       });
     } catch (err) {
       console.error('getattr error:', err);
-      cb(-Fuse.EIO || -5);
+      cb(Fuse.EIO);
     }
   },
 
@@ -179,12 +179,12 @@ const fuseOps = {
     console.log('open(%s, %d)', path, flags);
     
     if (!wsClient) {
-      return cb(-Fuse.ENOTCONN || -107);
+      return cb(Fuse.ENOENT);
     }
 
     const node = findNode(path);
     if (!node) {
-      return cb(-Fuse.ENOENT || -2);
+      return cb(Fuse.ENOENT);
     }
 
     cb(0, 42); // return a dummy file handle
@@ -194,13 +194,13 @@ const fuseOps = {
     console.log('read(%s, %d, %d, %d)', path, fd, len, pos);
     
     if (!wsClient) {
-      return cb(-Fuse.ENOTCONN || -107);
+      return cb(Fuse.ENOENT);
     }
 
     try {
       const node = findNode(path);
       if (!node) {
-        return cb(-Fuse.ENOENT || -2);
+        return cb(Fuse.ENOENT);
       }
 
       const content = node.content || '';
@@ -216,7 +216,7 @@ const fuseOps = {
       cb(bytesToRead);
     } catch (err) {
       console.error('read error:', err);
-      cb(-Fuse.EIO || -5);
+      cb(Fuse.EIO);
     }
   },
 
@@ -224,7 +224,7 @@ const fuseOps = {
     console.log('write(%s, %d, %d, %d)', path, fd, len, pos);
     
     if (!wsClient) {
-      return cb(-Fuse.ENOTCONN || -107);
+      return cb(Fuse.ENOENT);
     }
 
     try {
@@ -245,11 +245,11 @@ const fuseOps = {
         })
         .catch(err => {
           console.error('write error:', err);
-          cb(-Fuse.EIO || -5);
+          cb(Fuse.EIO);
         });
     } catch (err) {
       console.error('write error:', err);
-      cb(-Fuse.EIO || -5);
+      cb(Fuse.EIO);
     }
   },
 
@@ -257,7 +257,7 @@ const fuseOps = {
     console.log('truncate(%s, %d)', path, size);
     
     if (!wsClient) {
-      return cb(-Fuse.ENOTCONN || -107);
+      return cb(Fuse.ENOENT);
     }
 
     // For simplicity, treat truncate as clearing the file
@@ -276,7 +276,7 @@ const fuseOps = {
         })
         .catch(err => {
           console.error('truncate error:', err);
-          cb(-Fuse.EIO || -5);
+          cb(Fuse.EIO);
         });
     } else {
       cb(0);

@@ -239,18 +239,18 @@ class FuseDOMClient {
     }
 
     this.domObserver = new MutationObserver(() => {
-      // Debounce DOM tree updates
+      // Debounce DOM tree updates - longer delay to avoid spam
       clearTimeout(this.updateTimeout);
       this.updateTimeout = setTimeout(() => {
         this.sendDOMTree();
-      }, 500);
+      }, 2000);
     });
 
     this.domObserver.observe(document.documentElement, {
       childList: true,
       subtree: true,
-      attributes: true,
-      characterData: true
+      attributes: false,  // Don't observe attribute changes
+      characterData: false  // Don't observe text changes
     });
   }
 
