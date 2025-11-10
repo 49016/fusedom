@@ -62,12 +62,19 @@ ls -la ./mnt/
 # drwxr-xr-x 1 user user  0 Nov 10 12:00 0.head
 # drwxr-xr-x 1 user user  0 Nov 10 12:00 0.body
 # -rw-r--r-- 1 user user 42 Nov 10 12:00 innerHTML
+#
+# Note: If elements have id attributes, they'll use the id instead of index:
+# drwxr-xr-x 1 user user  0 Nov 10 12:00 header.div     # div with id="header"
+# drwxr-xr-x 1 user user  0 Nov 10 12:00 content.div    # div with id="content"
 
 # Read the body content
 cat ./mnt/0.html/0.body/innerHTML
 
 # Write new content - watch it appear in the browser!
 echo "<h1>Hello from FUSE!</h1><p>I modified the DOM using echo!</p>" > ./mnt/0.html/0.body/innerHTML
+
+# If elements have IDs, you can reference them directly:
+# echo "Updated content" > ./mnt/0.html/0.body/header.div/innerHTML
 ```
 
 ### Step 4: See the Magic! ✨

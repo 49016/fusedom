@@ -109,20 +109,24 @@ ls -la ./mnt/
 # View current body content
 cat ./mnt/0.html/0.body/innerHTML
 
-# Change the demo content
-echo "&lt;h2&gt;Hello from the filesystem!&lt;/h2&gt;&lt;p&gt;This was written via echo command&lt;/p&gt;" > ./mnt/0.html/0.body/innerHTML
+# Change the demo content by ID (this page has id="demo-content")
+echo "&lt;h2&gt;Hello from the filesystem!&lt;/h2&gt;&lt;p&gt;This was written via echo command&lt;/p&gt;" > ./mnt/0.html/0.body/0.div/demo-content.div/innerHTML
 
-# Or modify specific elements
+# Or modify by numeric index
 echo "Modified via FUSE" > ./mnt/0.html/0.body/0.div/innerHTML
 
-# Change text content
-echo "New Title" > ./mnt/0.html/0.body/0.div/0.h1/innerText</pre>
+# Change text content by ID
+echo "New Title" > ./mnt/0.html/0.body/0.div/0.h1/innerText
+
+# Read element by ID
+cat ./mnt/0.html/0.body/0.div/demo-content.div/innerHTML</pre>
       
       <h3>Structure:</h3>
       <p>The filesystem represents the DOM as:</p>
       <ul>
         <li><code>0.html</code> - The root HTML element (index 0)</li>
         <li><code>0.body</code> - The body element (first body child of html)</li>
+        <li><code>{id}.{tag}</code> - Elements with IDs use the id instead of index (e.g., <code>demo-content.div</code>)</li>
         <li><code>innerHTML</code>, <code>innerText</code>, <code>textContent</code> - Properties you can read/write</li>
       </ul>
     </div>
@@ -140,7 +144,8 @@ echo "New Title" > ./mnt/0.html/0.body/0.div/0.h1/innerText</pre>
         <li>This page: <code>./mnt/0.html/</code></li>
         <li>Body: <code>./mnt/0.html/0.body/</code></li>
         <li>Container div: <code>./mnt/0.html/0.body/0.div/</code></li>
-        <li>Demo content: <code>./mnt/0.html/0.body/0.div/4.div/innerHTML</code></li>
+        <li>Demo content (by ID): <code>./mnt/0.html/0.body/0.div/demo-content.div/innerHTML</code></li>
+        <li>Current time span (by ID): <code>./mnt/0.html/0.body/0.div/demo-content.div/2.p/current-time.span/innerText</code></li>
       </ul>
     </div>
   </div>
