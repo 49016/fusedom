@@ -37,7 +37,11 @@ Open `index.html` in your web browser. The page will automatically connect to th
 
 ### 3. Manipulate the DOM via filesystem
 
-The DOM is exposed as a hierarchical filesystem structure. Each element is represented as a directory named `{index}.{tagname}`, where index is the position among siblings with the same tag name.
+The DOM is exposed as a hierarchical filesystem structure. Each element is represented as a directory named `{identifier}.{tagname}`, where:
+- `identifier` is the element's `id` attribute if present (e.g., `main.div`)
+- `identifier` is a numeric index if no `id` is set (e.g., `0.div`)
+
+The index represents the position among siblings with the same tag name.
 
 #### Examples
 
@@ -57,20 +61,23 @@ cat ./mnt/0.html/0.body/innerHTML
 # Write new content (this will update the live page!)
 echo "<h1>Hello World</h1>" > ./mnt/0.html/0.body/innerHTML
 
-# Modify specific element's text
+# Modify element by numeric index
 echo "New Title Text" > ./mnt/0.html/0.body/0.div/0.h1/innerText
 
-# Clear content
-echo "" > ./mnt/0.html/0.body/0.div/innerHTML
+# Modify element by ID (if the div has id="header")
+echo "Updated Header" > ./mnt/0.html/0.body/header.div/innerHTML
+
+# Clear content using ID reference
+echo "" > ./mnt/0.html/0.body/main.div/innerHTML
 ```
 
 ### DOM Structure
 
 Each DOM element is exposed as a directory containing:
-- Child elements (as subdirectories): `{index}.{tagname}/`
+- Child elements (as subdirectories): `{identifier}.{tagname}/` where identifier is either the element's `id` or a numeric index
 - Properties (as files): `innerHTML`, `innerText`, `textContent`, `value`, `className`, `id`
 
-Example structure:
+Example structure without IDs:
 ```
 mnt/
 └── 0.html/
@@ -87,6 +94,25 @@ mnt/
         │   ├── 0.h1/
         │   └── ...
         └── ...
+```
+
+Example structure with IDs:
+```
+mnt/
+└── 0.html/
+    ├── innerHTML
+    ├── innerText
+    ├── 0.head/
+    │   └── ...
+    └── 0.body/
+        ├── innerHTML
+        ├── innerText
+        ├── header.div/          # div with id="header"
+        │   ├── innerHTML
+        │   ├── main-title.h1/  # h1 with id="main-title"
+        │   └── ...
+        ├── content.div/         # div with id="content"
+        └── footer.div/          # div with id="footer"
 ```
 
 ## Architecture
