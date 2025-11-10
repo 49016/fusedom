@@ -1,6 +1,10 @@
 /**
  * FuseDOM Client Library
  * Connects a web page's DOM to a FUSE filesystem via WebSocket
+ * 
+ * WARNING: This library intentionally allows arbitrary HTML injection
+ * for the purpose of DOM manipulation. Only use on trusted pages you control.
+ * Do not use on pages with sensitive data or user input.
  */
 
 class FuseDOMClient {

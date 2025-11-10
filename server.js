@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+/**
+ * FuseDOM Server
+ * FUSE filesystem driver for web page DOM manipulation
+ * 
+ * WARNING: This server allows arbitrary HTML injection into connected web pages.
+ * Only use with web pages you own and trust. This is a development/demonstration
+ * tool and should not be used in production or with sensitive data.
+ */
+
 import Fuse from 'fuse-native';
 import { WebSocketServer } from 'ws';
 import { mkdirSync, existsSync } from 'fs';
