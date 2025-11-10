@@ -1,0 +1,18 @@
+{
+  "name": "fusedom",
+  "version": "1.0.0",
+  "description": "FUSE driver for DOM manipulation via filesystem operations",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": ["fuse", "dom", "filesystem", "websocket"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fuse-native": "^2.2.6",
+    "ws": "^8.14.2"
+  }
+}

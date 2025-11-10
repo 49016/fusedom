@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FuseDOM Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+    
+    .status {
+      padding: 10px;
+      margin: 20px 0;
+      border-radius: 4px;
+      background-color: #e3f2fd;
+      border-left: 4px solid #2196F3;
+    }
+    
+    .instructions {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    
+    .instructions h2 {
+      margin-top: 0;
+      color: #856404;
+    }
+    
+    .instructions code {
+      background-color: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid #ddd;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .instructions pre {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+    }
+    
+    #demo-content {
+      margin: 20px 0;
+      padding: 20px;
+      border: 2px dashed #ccc;
+      border-radius: 4px;
+      min-height: 100px;
+    }
+    
+    .success {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    
+    .error {
+      color: #f44336;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FuseDOM Example Page</h1>
+    
+    <div class="status" id="connection-status">
+      <strong>Status:</strong> <span id="status-text">Connecting to server...</span>
+    </div>
+    
+    <div class="instructions">
+      <h2>How to Use FuseDOM</h2>
+      <p>FuseDOM allows you to manipulate this web page's DOM using filesystem operations!</p>
+      
+      <h3>Setup:</h3>
+      <ol>
+        <li>Run the server: <code>npm install && node server.js ./mnt 8080</code></li>
+        <li>Open this page in your browser</li>
+        <li>Use filesystem commands to modify the DOM</li>
+      </ol>
+      
+      <h3>Example Commands:</h3>
+      <p>Try these commands in your terminal (in a new terminal window, not where the server is running):</p>
+      
+      <pre># List the DOM structure
+ls -la ./mnt/
+
+# View current body content
+cat ./mnt/0.html/0.body/innerHTML
+
+# Change the demo content
+echo "&lt;h2&gt;Hello from the filesystem!&lt;/h2&gt;&lt;p&gt;This was written via echo command&lt;/p&gt;" > ./mnt/0.html/0.body/innerHTML
+
+# Or modify specific elements
+echo "Modified via FUSE" > ./mnt/0.html/0.body/0.div/innerHTML
+
+# Change text content
+echo "New Title" > ./mnt/0.html/0.body/0.div/0.h1/innerText</pre>
+      
+      <h3>Structure:</h3>
+      <p>The filesystem represents the DOM as:</p>
+      <ul>
+        <li><code>0.html</code> - The root HTML element (index 0)</li>
+        <li><code>0.body</code> - The body element (first body child of html)</li>
+        <li><code>innerHTML</code>, <code>innerText</code>, <code>textContent</code> - Properties you can read/write</li>
+      </ul>
+    </div>
+    
+    <h2>Demo Content Area</h2>
+    <div id="demo-content">
+      <h3>This is the demo area</h3>
+      <p>Try modifying this content using filesystem commands!</p>
+      <p>Current time: <span id="current-time"></span></p>
+    </div>
+    
+    <div class="status">
+      <strong>DOM Path Examples:</strong>
+      <ul>
+        <li>This page: <code>./mnt/0.html/</code></li>
+        <li>Body: <code>./mnt/0.html/0.body/</code></li>
+        <li>Container div: <code>./mnt/0.html/0.body/0.div/</code></li>
+        <li>Demo content: <code>./mnt/0.html/0.body/0.div/4.div/innerHTML</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="fusedom-client.js"></script>
+  <script>
+    // Update connection status
+    window.addEventListener('load', () => {
+      const statusText = document.getElementById('status-text');
+      
+      // Wait a bit for the connection to establish
+      setTimeout(() => {
+        if (window.fuseDOMClient && window.fuseDOMClient.connected) {
+          statusText.innerHTML = '<span class="success">✓ Connected to FUSE server</span>';
+        } else {
+          statusText.innerHTML = '<span class="error">✗ Not connected - Make sure the server is running</span>';
+        }
+      }, 1000);
+      
+      // Update current time
+      function updateTime() {
+        const timeElement = document.getElementById('current-time');
+        if (timeElement) {
+          timeElement.textContent = new Date().toLocaleTimeString();
+        }
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
+    });
+  </script>
+</body>
+</html>
