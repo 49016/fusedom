@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FuseDOM ID Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .box {
+      padding: 20px;
+      margin: 10px 0;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="header" class="box">
+    <h1 id="main-title">Test Page with IDs</h1>
+    <p>This page tests id-based referencing</p>
+  </div>
+  
+  <div id="content" class="box">
+    <h2>Content Section</h2>
+    <p id="description">Original description text</p>
+  </div>
+  
+  <div id="footer" class="box">
+    <p>Footer area</p>
+  </div>
+
+  <script src="fusedom-client.js"></script>
+  <script>
+    // Update connection status
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.fuseDOMClient && window.fuseDOMClient.connected) {
+          console.log('Connected! Try these paths:');
+          console.log('  ./mnt/0.html/0.body/header.div/innerHTML');
+          console.log('  ./mnt/0.html/0.body/content.div/description.p/innerText');
+          console.log('  ./mnt/0.html/0.body/footer.div/innerHTML');
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

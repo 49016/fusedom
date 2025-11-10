@@ -60,7 +60,10 @@ class FuseDOMClient {
   buildDOMTree(element = document.documentElement, pathPrefix = '') {
     const tagName = element.tagName.toLowerCase();
     const index = this.getElementIndex(element);
-    const nodeName = `${index}.${tagName}`;
+    const elementId = element.id;
+    
+    // Use id if available, otherwise use index
+    const nodeName = elementId ? `${elementId}.${tagName}` : `${index}.${tagName}`;
     const currentPath = pathPrefix + '/' + nodeName;
 
     const node = {
@@ -153,24 +156,33 @@ class FuseDOMClient {
         break;
       }
 
-      // Parse element selector (e.g., "0.body" -> index 0, tag "body")
-      const match = part.match(/^(\d+)\.(.+)$/);
+      // Parse element selector (e.g., "0.body" or "main.div" -> selector, tag)
+      const match = part.match(/^(.+)\.(.+)$/);
       if (!match) {
         return null;
       }
 
-      const [, indexStr, tagName] = match;
-      const index = parseInt(indexStr);
+      const [, selector, tagName] = match;
 
-      // Find child with matching tag and index
+      // Find child with matching tag and selector (either index or id)
       const children = Array.from(current.children);
       const sameTagChildren = children.filter(el => el.tagName.toLowerCase() === tagName.toLowerCase());
       
-      if (index >= sameTagChildren.length) {
-        return null;
+      // Check if selector is a numeric index
+      if (/^\d+$/.test(selector)) {
+        const index = parseInt(selector);
+        if (index >= sameTagChildren.length) {
+          return null;
+        }
+        current = sameTagChildren[index];
+      } else {
+        // Selector is an id - find element by id and verify tag name
+        const found = sameTagChildren.find(el => el.id === selector);
+        if (!found) {
+          return null;
+        }
+        current = found;
       }
-
-      current = sameTagChildren[index];
     }
 
     return { element: current, property: property };
